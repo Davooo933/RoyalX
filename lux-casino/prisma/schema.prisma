@@ -205,3 +205,11 @@ model FairnessSeed {
   createdAt      DateTime @default(now())
   revealedAt     DateTime?
 }
+
+model RiskRule {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  enabled   Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}

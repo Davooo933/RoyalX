@@ -56,6 +56,9 @@ export default function AdminPage() {
 						<input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} placeholder="Amount" className="px-3 py-2 bg-black border border-zinc-700 rounded w-48" />
 						<button onClick={async () => { await axios.post("/api/admin/bonus", { userId, amount }); alert("Bonus sent"); }} className="px-4 py-2 bg-emerald-600 rounded">Send</button>
 					</div>
+					<div className="mt-4 text-sm">
+						<a href="/admin/users" className="underline text-amber-400">Manage Users</a>
+					</div>
 				</div>
 				<div className="p-6 rounded bg-zinc-900">
 					<h2 className="text-xl mb-4">Games & Risk Controls</h2>

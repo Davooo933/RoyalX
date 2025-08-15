@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { ensureRtpController, decideWinWithRtp } from "@/lib/rtp";
 import { getBus } from "@/lib/bus";
+import { evaluateRisk } from "@/lib/risk";
 
 export type Outcome = {
 	win: boolean;
@@ -21,6 +22,9 @@ export async function playRtpRound(params: {
 	const wallet = await prisma.wallet.findFirst({ where: { userId, currency: "USDT", chain: "TRON" } });
 	if (!wallet) throw new Error("No wallet");
 	if (Number(wallet.balance) < betAmount) throw new Error("Insufficient balance");
+
+	const risk = await evaluateRisk(userId, gameKey, betAmount);
+	if (!risk.allowed) throw new Error(`Risk check failed: ${risk.reasons?.join(", ")}`);
 
 	const outcome = buildOutcome({
 		betAmount,
