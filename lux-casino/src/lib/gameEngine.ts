@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { ensureRtpController, decideWinWithRtp } from "@/lib/rtp";
+import { getBus } from "@/lib/bus";
 
 export type Outcome = {
 	win: boolean;
@@ -29,7 +30,7 @@ export async function playRtpRound(params: {
 		payload,
 	});
 
-	return await prisma.$transaction(async (tx) => {
+	const result = await prisma.$transaction(async (tx) => {
 		const round = await tx.gameRound.create({
 			data: {
 				game: { connect: { key: gameKey } },
@@ -86,8 +87,21 @@ export async function playRtpRound(params: {
 				currentPaid: { increment: outcome.payout },
 			},
 		});
-		return outcome;
+		return { roundId: round.id };
 	});
+
+	// Emit after commit
+	getBus().emit("game_event", {
+		gameKey,
+		userId,
+		betAmount,
+		payout: outcome.payout,
+		win: outcome.win,
+		at: new Date().toISOString(),
+		meta: outcome.result,
+	});
+
+	return outcome;
 }
 
 export function coinflipOutcome(args: { betAmount: number; targetRtp: number; currentWagered: number; currentPaid: number; payload?: any }): Outcome {

@@ -1,10 +1,17 @@
 import Link from "next/link";
 
 const games = [
-	{ key: "CRASH", name: "Crash Game" },
+	{ key: "CRASH", name: "Crash" },
 	{ key: "DICE", name: "Dice" },
 	{ key: "ROULETTE", name: "Roulette" },
 	{ key: "PLINKO", name: "Plinko" },
+	{ key: "DOUBLE", name: "Double" },
+	{ key: "HILO", name: "Hi-Lo" },
+	{ key: "BINS", name: "Bins" },
+	{ key: "WHEEL", name: "Wheel" },
+	{ key: "BLACKJACK", name: "Blackjack" },
+	{ key: "SLOTS", name: "Slots" },
+	{ key: "COINFLIP", name: "Coinflip" },
 ];
 
 export default function GamesPage() {
