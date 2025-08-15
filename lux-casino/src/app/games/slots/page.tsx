@@ -1,15 +1,5 @@
 import Link from "next/link";
-
-const slotVariants = [
-	{ slug: "gates-of-olympus", name: "Gates of Olympus" },
-	{ slug: "lucky-ladys-charm", name: "Lucky Lady’s Charm" },
-	{ slug: "book-of-ra", name: "Book Of Ra" },
-	{ slug: "the-money-game", name: "The Money Game" },
-	{ slug: "3-coins-egypt", name: "3 Coins Egypt" },
-	{ slug: "gonzos-quest-touch", name: "Gonzo’s Quest Touch" },
-	{ slug: "fruit-cocktail", name: "Fruit Cocktail" },
-	{ slug: "ghost-pirates", name: "Ghost Pirates" },
-];
+import { slotVariants } from "@/config/games";
 
 export default function SlotsIndexPage() {
 	return (
