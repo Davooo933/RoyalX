@@ -1,0 +1,207 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  BONUS
+  BET
+  PAYOUT
+  ADJUSTMENT
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELED
+}
+
+enum GameCategory {
+  SLOT
+  TABLE
+  MINI
+  WHEEL
+  CARD
+}
+
+enum BonusType {
+  CASH
+  FREESPINS
+  CREDIT
+}
+
+enum BonusStatus {
+  PENDING
+  ACTIVE
+  CLAIMED
+  EXPIRED
+  CANCELED
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String?
+  passwordHash  String
+  role          Role         @default(USER)
+  status        UserStatus   @default(ACTIVE)
+  referralCode  String?      @unique
+  referredById  String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  lastLoginAt   DateTime?
+
+  wallets       Wallet[]
+  transactions  Transaction[]
+  rounds        GameRound[]
+  bets          Bet[]
+  bonuses       Bonus[]
+  auditLogs     AuditLog[]   @relation("UserAuditLogs")
+  fairnessSeeds FairnessSeed[]
+}
+
+model Wallet {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  currency   String   @default("USDT")
+  chain      String   @default("TRON")
+  address    String   @unique
+  privateKey String?
+  balance    Decimal  @default(0)
+  locked     Decimal  @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         String             @id @default(cuid())
+  userId     String?
+  user       User?              @relation(fields: [userId], references: [id])
+  walletId   String?
+  wallet     Wallet?            @relation(fields: [walletId], references: [id])
+  type       TransactionType
+  status     TransactionStatus
+  amount     Decimal
+  currency   String
+  chain      String?
+  txHash     String?
+  metaJson   Json?
+  createdAt  DateTime           @default(now())
+}
+
+model Game {
+  id         String        @id @default(cuid())
+  key        String        @unique
+  name       String
+  category   GameCategory
+  rtpTarget  Float         @default(0.30) // 30% RTP target as requested
+  isEnabled  Boolean       @default(true)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  rounds     GameRound[]
+  rtpEntries RTPController[]
+}
+
+model GameRound {
+  id            String    @id @default(cuid())
+  gameId        String
+  game          Game      @relation(fields: [gameId], references: [id])
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id])
+  betAmount     Decimal
+  payoutAmount  Decimal   @default(0)
+  seedServer    String
+  seedClient    String
+  nonce         Int
+  resultJson    Json
+  status        String    @default("SETTLED")
+  startedAt     DateTime  @default(now())
+  settledAt     DateTime?
+
+  bets          Bet[]
+}
+
+model Bet {
+  id               String    @id @default(cuid())
+  roundId          String
+  round            GameRound @relation(fields: [roundId], references: [id])
+  userId           String
+  user             User      @relation(fields: [userId], references: [id])
+  amount           Decimal
+  payoutMultiplier Float
+  win              Boolean
+  createdAt        DateTime  @default(now())
+}
+
+model RTPController {
+  id             String   @id @default(cuid())
+  scope          String   @default("GLOBAL") // GLOBAL or PER_GAME
+  gameId         String?
+  game           Game?    @relation(fields: [gameId], references: [id])
+  targetRtp      Float    @default(0.30)
+  currentWagered Decimal  @default(0)
+  currentPaid    Decimal  @default(0)
+  configJson     Json?
+  lastResetAt    DateTime @default(now())
+}
+
+model Bonus {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  type           BonusType
+  amount         Decimal
+  status         BonusStatus  @default(PENDING)
+  expiresAt      DateTime?
+  claimedAt      DateTime?
+  createdById    String?
+  createdAt      DateTime     @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation("UserAuditLogs", fields: [actorId], references: [id])
+  action     String
+  targetType String?
+  targetId   String?
+  metaJson   Json?
+  createdAt  DateTime @default(now())
+}
+
+model FairnessSeed {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  serverSeedHash String   @unique
+  serverSeed     String?
+  clientSeed     String?
+  nonceStart     Int      @default(0)
+  createdAt      DateTime @default(now())
+  revealedAt     DateTime?
+}
