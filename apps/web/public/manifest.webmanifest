@@ -1,0 +1,9 @@
+{
+  "name": "Luxury Poker",
+  "short_name": "Poker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b10",
+  "theme_color": "#0b0b10",
+  "icons": []
+}

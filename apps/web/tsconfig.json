@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@poker/ui": ["../../packages/ui/src"]
+    }
+  },
+  "include": ["src", "vite-env.d.ts"]
+}
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@poker/ui": ["../../packages/ui/src"]
+    }
+  },
+  "include": ["src", "vite-env.d.ts"]
+}
