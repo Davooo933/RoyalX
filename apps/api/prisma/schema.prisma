@@ -1,0 +1,225 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String?
+  avatarUrl    String?
+  kycStatus    String   @default("pending")
+  createdAt    DateTime @default(now())
+  wallets      Wallet[]
+  ledgers      Ledger[]
+  seats        Seat[]
+  actions      Action[]
+  chats        ChatMessage[]
+  compliance   ComplianceEvent[]
+}
+
+model Wallet {
+  id           String   @id @default(cuid())
+  userId       String
+  chain        String
+  address      String   @unique
+  balanceMinor BigInt   @default(0)
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Ledger {
+  id         String   @id @default(cuid())
+  userId     String
+  deltaMinor BigInt
+  currency   String   @default("USDT")
+  reason     String
+  txHash     String?
+  meta       Json?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Table {
+  id           String   @id @default(cuid())
+  name         String
+  isPrivate    Boolean  @default(false)
+  passwordHash String?
+  smallBlind   BigInt
+  bigBlind     BigInt
+  maxSeats     Int
+  status       String   @default("idle")
+  seats        Seat[]
+  hands        Hand[]
+  chats        ChatMessage[]
+}
+
+model Seat {
+  id         String  @id @default(cuid())
+  tableId    String
+  userId     String
+  stackMinor BigInt
+  seatIndex  Int
+  sittingOut Boolean @default(false)
+  table      Table   @relation(fields: [tableId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
+}
+
+model Hand {
+  id        String   @id @default(cuid())
+  tableId   String
+  seed      String
+  nonce     Int
+  deckHash  String
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  table     Table    @relation(fields: [tableId], references: [id])
+  actions   Action[]
+}
+
+model Action {
+  id          String   @id @default(cuid())
+  handId      String
+  userId      String
+  type        String
+  amountMinor BigInt?
+  street      String
+  createdAt   DateTime @default(now())
+  hand        Hand     @relation(fields: [handId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  tableId   String
+  userId    String
+  text      String
+  createdAt DateTime @default(now())
+  table     Table    @relation(fields: [tableId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ComplianceEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  type      String
+  detail    Json
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String?
+  avatarUrl    String?
+  kycStatus    String   @default("pending")
+  createdAt    DateTime @default(now())
+  wallets      Wallet[]
+  ledgers      Ledger[]
+  seats        Seat[]
+  actions      Action[]
+  chats        ChatMessage[]
+  compliance   ComplianceEvent[]
+}
+
+model Wallet {
+  id           String   @id @default(cuid())
+  userId       String
+  chain        String
+  address      String   @unique
+  balanceMinor BigInt   @default(0)
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Ledger {
+  id         String   @id @default(cuid())
+  userId     String
+  deltaMinor BigInt
+  currency   String   @default("USDT")
+  reason     String
+  txHash     String?
+  meta       Json?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Table {
+  id           String   @id @default(cuid())
+  name         String
+  isPrivate    Boolean  @default(false)
+  passwordHash String?
+  smallBlind   BigInt
+  bigBlind     BigInt
+  maxSeats     Int
+  status       String   @default("idle")
+  seats        Seat[]
+  hands        Hand[]
+  chats        ChatMessage[]
+}
+
+model Seat {
+  id         String  @id @default(cuid())
+  tableId    String
+  userId     String
+  stackMinor BigInt
+  seatIndex  Int
+  sittingOut Boolean @default(false)
+  table      Table   @relation(fields: [tableId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
+}
+
+model Hand {
+  id        String   @id @default(cuid())
+  tableId   String
+  seed      String
+  nonce     Int
+  deckHash  String
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  table     Table    @relation(fields: [tableId], references: [id])
+  actions   Action[]
+}
+
+model Action {
+  id          String   @id @default(cuid())
+  handId      String
+  userId      String
+  type        String
+  amountMinor BigInt?
+  street      String
+  createdAt   DateTime @default(now())
+  hand        Hand     @relation(fields: [handId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  tableId   String
+  userId    String
+  text      String
+  createdAt DateTime @default(now())
+  table     Table    @relation(fields: [tableId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ComplianceEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  type      String
+  detail    Json
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}

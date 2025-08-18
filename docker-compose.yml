@@ -1,0 +1,86 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: poker
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  api:
+    build: ./apps/api
+    env_file:
+      - ./apps/api/.env.example
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/poker?schema=public
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+  web:
+    build: ./apps/web
+    depends_on:
+      - api
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+      - api
+volumes:
+  db_data:
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: poker
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  api:
+    build: ./apps/api
+    env_file:
+      - ./apps/api/.env.example
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/poker?schema=public
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+  web:
+    build: ./apps/web
+    ports:
+      - "4173:4173"
+    depends_on:
+      - api
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+      - api
+volumes:
+  db_data:

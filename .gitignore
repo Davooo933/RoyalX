@@ -1,0 +1,14 @@
+node_modules
+pnpm-lock.yaml
+*.log
+dist
+.env
+/apps/api/.env
+/apps/web/.env
+node_modules
+pnpm-lock.yaml
+*.log
+dist
+.env
+/apps/api/.env
+/apps/web/.env
