@@ -1,0 +1,14 @@
+{
+  "name": "lux-casino",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm -w server run dev & npm -w client run dev",
+    "server": "npm -w server run dev",
+    "client": "npm -w client run dev"
+  }
+}

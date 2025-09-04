@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Cinzel:wght@600;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lux-bg: #0a0a0f;
+  --lux-panel: #141421;
+  --lux-gold: #D4AF37;
+  --lux-velvet: #1a0f1f;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 70% 0%, rgba(212,175,55,0.15), transparent 60%),
+              radial-gradient(1000px 500px at 0% 100%, rgba(212,175,55,0.15), transparent 55%),
+              var(--lux-bg);
+  color: white;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.lux-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid rgba(212,175,55,0.2);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  border-radius: 16px;
+}
+
+.lux-gold-text {
+  background: linear-gradient(90deg, #F9E17D, #D4AF37, #F6D365);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
