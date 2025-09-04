@@ -1,0 +1,16 @@
+{
+  "casinoReserve": 50,
+  "totalWagered": 0,
+  "totalPayout": 0,
+  "players": {
+    "B2RcGd2xxdpMqSRgusdGd": {
+      "id": "B2RcGd2xxdpMqSRgusdGd",
+      "name": "Guest",
+      "balance": 100,
+      "totalWagered": 0,
+      "totalWon": 0
+    }
+  },
+  "rtpWindow": [],
+  "windowSize": 500
+}
